@@ -21,12 +21,17 @@ class Window(Form, Base):
         self.closeButton.clicked.connect(self.close)
         self.convertButton.clicked.connect(self.convert)
         
+        # update the database, how many times this app is used
+        site.addsitedir(r'r:/pipe_repo/users/qurban')
+        import appUsageApp
+        appUsageApp.updateDatabase('MayaToArnold')
+        
         
     def materials(self):
         materials = []
         if self.materialButton.isChecked():
             materials[:] = pc.ls(sl = True)
-        if self.meshButton.isChecked():
+        elif self.meshButton.isChecked():
             meshes = pc.ls(sl = True, type = 'mesh', dag = True)
             for mesh in meshes:
                 for sg in pc.listConnections(mesh, type = 'shadingEngine'):
@@ -44,7 +49,6 @@ class Window(Form, Base):
         return list(set(materials))
     
     def filterMaterials(self, mtls = []):
-        print mtls
         try:
             mtls.remove("lambert1")
         except ValueError:
@@ -76,6 +80,8 @@ class Window(Form, Base):
                 arnold.outColor.connect(shEng.surfaceShader)
             if self.renameButton.isChecked():
                 name = str(node)
+                if "phongE" in name:
+                    name = name.replace("phongE", "phonge")
                 newName = name.replace((type(node).__name__).lower(), "aiStandard")
                 pc.rename(arnold, newName)
             if self.removeButton.isChecked():

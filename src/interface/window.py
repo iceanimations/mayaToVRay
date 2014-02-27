@@ -21,6 +21,8 @@ class Window(Form, Base):
         self.closeButton.clicked.connect(self.close)
         self.convertButton.clicked.connect(self.convert)
         
+        self.goodMaterials = [pc.nt.Lambert, pc.nt.Blinn, pc.nt.Phong, pc.nt.PhongE]
+        
         # update the database, how many times this app is used
         site.addsitedir(r'r:/pipe_repo/users/qurban')
         import appUsageApp
@@ -45,7 +47,7 @@ class Window(Form, Base):
             for mtl in pc.ls(type = ['phong', 'phongE', 'blinn', 'lambert']):
                 materials.append(mtl)
         if not materials:
-            pc.warning('No selection or no "aiStandard" found in the selection')
+            pc.warning('No selection or no Material found in the selection')
         return list(set(materials))
     
     def filterMaterials(self, mtls = []):
@@ -69,6 +71,9 @@ class Window(Form, Base):
             for mtl in mtls:
                 if type(mtl) == pc.nt.PhongE:
                     mtls.remove(mtl)
+        for mtl in mtls:
+            if type(mtl) not in self.goodMaterials:
+                mtls.remove(mtl)
         return mtls
     
     def convert(self):
@@ -78,17 +83,22 @@ class Window(Form, Base):
             for shEng in pc.listConnections(node, type = 'shadingEngine'):
                 shEng.surfaceShader.disconnect()
                 arnold.outColor.connect(shEng.surfaceShader)
+            name = str(node)
+            pc.rename(node, "this_is_temp_node")
             if self.renameButton.isChecked():
-                name = str(node)
                 if "phongE" in name:
                     name = name.replace("phongE", "phonge")
-                newName = name.replace((type(node).__name__).lower(), "aiStandard")
-                pc.rename(arnold, newName)
-            if self.removeButton.isChecked():
-                pc.delete(node)
+            newName = name.replace((type(node).__name__).lower(), "aiStandard")
+            pc.rename(arnold, newName)
+            arnold.KsColor.set(node.specularColor.get())
+            arnold.KrColor.set(node.reflectedColor.get())
+            attr = None
             try:
                 attr = node.color.inputs(plugs = True)[0]
             except:
-                continue
-            attr.disconnect()
-            attr.connect(arnold.color)
+                arnold.color.set(node.color.get())
+            if attr:
+                attr.disconnect()
+                attr.connect(arnold.color)
+            if self.removeButton.isChecked():
+                pc.delete(node)

@@ -84,7 +84,7 @@ class Window(Form, Base):
                 shEng.surfaceShader.disconnect()
                 arnold.outColor.connect(shEng.surfaceShader)
             name = str(node)
-            pc.rename(node, "this_is_temp_node")
+            pc.rename(node, name +"_temp_node")
             if self.renameButton.isChecked():
                 if "phongE" in name:
                     name = name.replace("phongE", "phonge")

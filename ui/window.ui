@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>327</width>
-    <height>224</height>
+    <width>333</width>
+    <height>228</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Maya to Arnold</string>
+   <string>Maya to VRay</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -51,7 +51,7 @@
     <item>
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
-       <string>Materials to be replaced with Arnold</string>
+       <string>Materials to be replaced with VRay</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
@@ -184,8 +184,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>327</width>
-     <height>21</height>
+     <width>333</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
